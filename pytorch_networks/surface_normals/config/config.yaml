@@ -16,16 +16,16 @@ train:
 
     # Synthetic datasets with ground truth labels - 10% split of train
   datasetsVal:
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/camera-normals'
 
   datasetsMatterportTrain:
     #- images: '/mnt/disks/dataset/matterport/matterport_train/v1/scans'
@@ -49,14 +49,14 @@ train:
 
   # Synthetic datasets with ground truth labels - Used as test set
   datasetsTestSynthetic:
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/camera-normals'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/camera-normals'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/camera-normals'
 
 
   # Training/Validation Params

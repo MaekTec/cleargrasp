@@ -16,16 +16,16 @@ train:
 
   # Synthetic datasets with ground truth labels - 10% split of train
   datasetsVal:
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/segmentation-masks'
 
   # Real Images (no ground truth labels)
   datasetsTestReal:
@@ -35,14 +35,14 @@ train:
 
   # Synthetic datasets with ground truth labels - Used as test set
   datasetsTestSynthetic:
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/segmentation-masks'
-      - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
-        labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/segmentation-masks'
+      - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
+        labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/segmentation-masks'
 
   # Training/Validation Params
   model: 'drn'  # Possible values - ['drn', 'deeplab_xception', 'deeplab_resnet']

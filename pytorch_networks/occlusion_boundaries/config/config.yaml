@@ -15,16 +15,16 @@ train:
 
     # Synthetic datasets with ground truth labels - 10% split of train
   datasetsVal:
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/outlines'
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/outlines'
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/outlines'
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/outlines'
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/outlines'
 
   # Real Images
   datasetsTestReal:
@@ -33,10 +33,10 @@ train:
 
   # Synthetic datasets with ground truth labels - Used as test set
   datasetsTestSynthetic:
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/outlines'
-    - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
-      labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/outlines'
 
   # Training/Validation Params
   model: 'drn' # Possible values - [''drn, 'unet', 'deeplab_xception', 'deeplab_resnet']
