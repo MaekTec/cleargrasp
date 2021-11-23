@@ -1,0 +1,113 @@
+# train.py Config - Training
+train:
+  # Synthetic datasets with ground truth labels
+  datasetsTrain:
+    - images: '../../data/datasets/cleargrasp-dataset-train/stemless-plastic-champagne-glass-train/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-train/stemless-plastic-champagne-glass-train/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-train/square-plastic-bottle-train/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-train/square-plastic-bottle-train/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-train/heart-bath-bomb-train/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-train/heart-bath-bomb-train/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-train/flower-bath-bomb-train/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-train/flower-bath-bomb-train/outlines'
+    - images: '../../data/datasets/cleargrasp-dataset-train/cup-with-waves-train/rgb-imgs'
+      labels: '../../data/datasets/cleargrasp-dataset-train/cup-with-waves-train/outlines'
+
+    # Synthetic datasets with ground truth labels - 10% split of train
+  datasetsVal:
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/stemless-plastic-champagne-glass-val/outlines'
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/square-plastic-bottle-val/outlines'
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/heart-bath-bomb-val/outlines'
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/flower-bath-bomb-val/outlines'
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-val/cup-with-waves-val/outlines'
+
+  # Real Images
+  datasetsTestReal:
+    - images: ''
+      labels: ''
+
+  # Synthetic datasets with ground truth labels - Used as test set
+  datasetsTestSynthetic:
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/outlines'
+    - images: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs'
+      labels: '../../data/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/outlines'
+
+  # Training/Validation Params
+  model: 'drn' # Possible values - [''drn, 'unet', 'deeplab_xception', 'deeplab_resnet']
+  batchSize: 96
+  numEpochs: 500
+  imgHeight: 256
+  imgWidth: 256
+  numClasses: 3
+  numInputChannels: 3 # Num of channels in input image. RGB = 3 channels, Grayscale = 1 channel.
+  output_stride: 8 # Possible values: [8, 16]. Output stride for deeplabv3 model. Smaller values give finer details in output mask.
+  numWorkers: 32 # Num of workers used in the dataloader
+  logsDir: '../../training/occlusion_boundaries' # Directory where logs of each exp will be saved.
+  lossFunc: 'cross_entropy2d' # Possible values: ['cross_entropy2d']
+  percentageDataForTraining: 1.0 # The percentage of images in dataset to be used for training. Rest used for validation.
+  validationBatchSize: 96
+  percentageDataForValidation: 1.0
+  testBatchSize: 26
+  outputStride: 8 # Possible values - [8, 16]. Output stride for deeplabv3 model. Smaller values give finer details in output mask.
+
+  continueTraining: False  # If true, continue training from a checkpoint
+  pathPrevCheckpoint: '../../training/occlusion_boundaries/exp-013/checkpoints/checkpoint-epoch-0090.pth' # Path to .pth checkpoint file to load to continue training from
+  initOptimizerFromCheckpoint: False  # Re-Initialize optimizer's state from checkpoint. NOTE: when this is enabled, value of learningRate will be overridden with value from checkpoint.
+  loadEpochNumberFromCheckpoint: False # If true, the epoch/iter numbering will start from the checkpoint's last epoch num.
+
+  saveImageInterval: 5 # Log output images to tensorboard every saveImageInterval epochs
+  testInterval: 1 # Run on test set every nTestInterval epochs. Keep at 0 to skip tests.
+  saveModelInterval: 3 # Save the model checkpoints every N epochs
+
+
+  # Optimizer Params
+  optimAdam:
+    learningRate: 0.0001
+    weightDecay: 0 # Other values: 0.0001
+  optimSgd:
+    learningRate: 1e-6
+    momentum: 0.9
+    weight_decay: 5e-4
+  lrScheduler: 'lr_poly' # Possible Values - ['', 'StepLR', 'ReduceLROnPlateau', 'lr_poly'] # lr_poly used for deeplabv3+
+  lrSchedulerStep:
+    step_size: 7
+    gamma: 0.1
+  lrSchedulerPlateau:
+    factor: 0.8
+    patience: 25
+    verbose: True
+  lrPoly:
+    epochSize: 1 # After these many epochs, change learning rate
+    decay: 0.7
+
+# eval.py Config - Validation/Testing Inference
+eval:
+  # Synthetic datasets with ground truth labels
+  # Used as validation set
+  datasetsSynthetic:
+    - images: ''
+
+  # Datasets of real images, no labels available
+  # Used as Test set
+  datasetsReal:
+    - images: ''
+
+  # Params
+  mode: 'outlines'  # Whether you're predicting outlines or masks. 2 possible values: ['outlines', 'masks']
+  model: 'drn' # Possible values: ['drn', 'deeplab_xception', 'deeplab_resnet']
+  numClasses: 3
+  batchSize: 16
+  imgHeight: 256
+  imgWidth: 256
+  numWorkers: 8 # Num of workers used in the dataloader
+  pathWeightsFile: 'data/models/outlines/checkpoint-outlines.pth' # Path to the checkpoint to be loaded
+  resultsDirSynthetic: 'data/results/test-synthetic' # The dir to which results on synthetic images will be stored
+  resultsDirReal: 'data/results/test-real'  # The dir to which results on real images will be stored
+  resultsWeightsSubDir: 'occlusion-weights' # The prediction of model will be converted to occlusion weights (for depth2depth) in this subfolder within each results folder
+  resultsWeightsVizSubDir: 'occlusion-weights-viz' # The visualization of the occlusion weights will be saved in this subfolder within resultsWeightsSubDir
