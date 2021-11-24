@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -p alldlc_gpu-rtx2080 # partition (queue)
 #SBATCH --mem 128G # memory pool for each core (4GB)
-#SBATCH -t 0-00:10 # time (D-HH:MM)
+#SBATCH -t 1-00:00 # time (D-HH:MM)
 #SBATCH -c 8 # number of cores
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 #SBATCH -D /work/dlclarge1/kaeppelm-cleargrasp
 #SBATCH -o %x.%N.%j.out # STDOUT  
 # #SBATCH -e %x.%N.%j.err # STDERR 
