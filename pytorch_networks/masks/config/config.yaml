@@ -46,7 +46,7 @@ train:
 
   # Training/Validation Params
   model: 'drn'  # Possible values - ['drn', 'deeplab_xception', 'deeplab_resnet']
-  batchSize: 196
+  batchSize: 32
   numEpochs: 300
   imgHeight: 256
   imgWidth: 256
@@ -57,9 +57,9 @@ train:
   logsDir: '../../training/masks' # Directory where logs of each exp will be saved.
   lossFunc: 'cross_entropy2d' # Possible values: ['cross_entropy2d']
   percentageDataForTraining: 1.0 # The percentage of images in dataset to be used for training. Rest used for validation.
-  validationBatchSize: 64
+  validationBatchSize: 32
   percentageDataForValidation: 1.0
-  testBatchSize: 64
+  testBatchSize: 32
   outputStride: 8 # Possible values - [8, 16]. Output stride for deeplabv3 model. Smaller values give finer details in output mask.
 
   continueTraining: False  # If true, continue training from a checkpoint
