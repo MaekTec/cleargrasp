@@ -5,41 +5,37 @@ files:
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/segmentation-masks/'
-    gt_depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/depth-imgs-rectified/'
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/segmentation-masks/'
-    gt_depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/depth-imgs-rectified/'
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/segmentation-masks/'
-    gt_depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/depth-imgs-rectified/'
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/segmentation-masks/'
-    gt_depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/depth-imgs-rectified/'
 
 # Path where the results will be stored
-resultsDir: 'results/'
+resultsDir: '../results/syn_novel'
 
 # Surface Normals Model
 normals:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../data/cleargrasp-checkpoints/surface_normals/checkpoint_normals.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/surface_normals/checkpoint_normals.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Outlines Model
 outlines:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../data/cleargrasp-checkpoints/outlines/checkpoint_outlines.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/outlines/checkpoint_outlines.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Segmentation Masks Model
 masks:
   model: 'drn' # Which model to use for inference. Possible values: ['drn', 'deeplab_resnet']
-  pathWeightsFile: '../data/cleargrasp-checkpoints/mask_segmentation/checkpoint_mask.pth'
+  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/mask_segmentation/checkpoint_mask.pth'
   inferenceHeight: 256
   inferenceWidth: 256
 
