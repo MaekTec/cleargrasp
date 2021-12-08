@@ -61,11 +61,11 @@ train:
 
   # Training/Validation Params
   model: 'drn' # Possible values: ['drn', 'deeplab_xception', 'deeplab_resnet']
-  batchSize: 32
+  batchSize: 64
   batchSizeMatterport: 0
   batchSizeScannet: 0
-  validationBatchSize: 32
-  testBatchSize: 32
+  validationBatchSize: 64
+  testBatchSize: 64
   numEpochs: 100
   imgHeight: 256
   imgWidth: 256
