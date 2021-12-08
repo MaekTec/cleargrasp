@@ -5,16 +5,20 @@ files:
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-round-potion-test/segmentation-masks/'
+    gt_depth: ''
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/glass-square-potion-test/segmentation-masks/'
+    gt_depth: ''
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/star-bath-bomb-test/segmentation-masks/'
+    gt_depth: ''
   - image: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/rgb-imgs/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/depth-imgs-rectified/'
     masks: '../data/datasets/cleargrasp-dataset-test-val/synthetic-test/tree-bath-bomb-test/segmentation-masks/'
-
+    gt_depth: ''
+    
 # Path where the results will be stored
 resultsDir: '../results/syn_novel'
 
