@@ -3,11 +3,6 @@
 # Input file Directories of Synthetic Images
 useInteractionDataset: True
 dataset: '../../dataset'
-#files:
-#  - image: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'
-#    depth: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'
-#    masks: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'
-#    gt_depth: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'
 
 # Path where the results will be stored
 resultsDir: '../results/interaction_dataset'
@@ -15,21 +10,21 @@ resultsDir: '../results/interaction_dataset'
 # Surface Normals Model
 normals:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/surface_normals/checkpoint_normals.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../training/surface_normals/interaction_data/checkpoints/checkpoint-epoch-0076.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Outlines Model
 outlines:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/outlines/checkpoint_outlines.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../training/occlusion_boundaries/interaction_data/checkpoints/checkpoint-epoch-0117.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Segmentation Masks Model
 masks:
   model: 'drn' # Which model to use for inference. Possible values: ['drn', 'deeplab_resnet']
-  pathWeightsFile: '../data/datasets/cleargrasp-checkpoints/mask_segmentation/checkpoint_mask.pth'
+  pathWeightsFile: '../training/masks/interaction_data/checkpoints/checkpoint-epoch-0067.pth'
   inferenceHeight: 256
   inferenceWidth: 256
 
