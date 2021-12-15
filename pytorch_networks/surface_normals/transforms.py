@@ -96,10 +96,13 @@ class DepthCameraNoise:
         edges_thick = cv.blur(edges_thick, (3, 3))  # blur to get higher values in middle of edge
 
         # add noise with a random kernel
-        edges_mask = edges_thick > 1.0
-        edges_noise = self.convolve_random_filter(np.expand_dims(edges_mask, 0).astype(float), (5, 5))
-        edges_noise = edges_noise[0, ...]
-        edges_mask_noise = edges_noise > 0.1
+        #edges_mask = edges_thick > 1.0
+        #edges_noise = self.convolve_random_filter(np.expand_dims(edges_mask, 0).astype(float), (5, 5))
+        #edges_noise = edges_noise[0, ...]
+        #edges_mask_noise = edges_noise > 0.1
+
+        edges_mask = edges_thick > 0.3
+        edges_mask_noise = edges_mask.astype(float)
 
         # remove holes from noise
         edges = cv.dilate(edges_mask_noise.astype(float), cv.getStructuringElement(cv.MORPH_RECT, (2, 2)))
