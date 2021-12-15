@@ -20,7 +20,7 @@ train:
   imgWidth: 256
   numClasses: 3
   numInputChannels: 3 # Num of channels in input image. RGB = 3 channels, Grayscale = 1 channel.
-  numWorkers: 1 # Num of workers used in the dataloader
+  numWorkers: 32 # Num of workers used in the dataloader
   logsDir: '../../training/surface_normals' # Directory where logs of each exp will be saved.
   lossFunc: 'cosine' # Possible values: ['cosine', 'radians']
   percentageDataForTraining: 1.0 # The percentage of images in dataset to be used for training. Rest used for validation.
