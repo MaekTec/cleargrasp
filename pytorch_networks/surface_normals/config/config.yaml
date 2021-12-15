@@ -1,5 +1,6 @@
 # train.py Config - Training
 train:
+  useInteractionDataset: False
   # For datasets, please pass atleast 1 value. If no datasets exist, pass "" as path for images.
   # Synthetic datasets with ground truth labels
   datasetsTrain:

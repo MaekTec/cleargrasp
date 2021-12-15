@@ -1,5 +1,6 @@
 # train.py Config - Training
 train:
+  useInteractionDataset: False
   # Synthetic datasets with ground truth labels
   datasetsTrain:
       - images: '../../data/datasets/cleargrasp-dataset-train/stemless-plastic-champagne-glass-train/rgb-imgs'

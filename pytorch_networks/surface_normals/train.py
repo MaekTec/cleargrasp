@@ -26,6 +26,9 @@ from tqdm import tqdm
 import dataloader
 import dataloader_matterport
 import dataloader_scannet
+import interaction_dataset
+from transforms import DepthCameraNoise, BinaryObjectMask
+import torchvision.transforms as transforms
 import loss_functions
 from modeling import deeplab
 from utils import utils
@@ -146,7 +149,12 @@ input_only = [
 ]
 
 db_synthetic_lst = []
-if config.train.datasetsTrain is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), train=True,
+        transform_cleargrasp=augs_train, input_only_cleargrasp=input_only)
+    db_synthetic_lst.append(db)
+elif config.train.datasetsTrain is not None:
     for dataset in config.train.datasetsTrain:
         if dataset.images:
             db_synthetic = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -154,7 +162,8 @@ if config.train.datasetsTrain is not None:
                                                             transform=augs_train,
                                                             input_only=input_only)
             db_synthetic_lst.append(db_synthetic)
-    db_synthetic = torch.utils.data.ConcatDataset(db_synthetic_lst)
+
+db_synthetic = torch.utils.data.ConcatDataset(db_synthetic_lst)
 
 #Note: If multiple folders for matterport/scannet are passed, only the last one will be taken in.
 if config.train.datasetsMatterportTrain is not None:
@@ -184,7 +193,12 @@ augs_test = iaa.Sequential([
 ])
 
 db_val_list = []
-if config.train.datasetsVal is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), val=True,
+        transform_cleargrasp=augs_test, input_only_cleargrasp=None)
+    db_val_list.append(db)
+elif config.train.datasetsVal is not None:
     for dataset in config.train.datasetsVal:
         if dataset.images:
             db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -222,7 +236,9 @@ if db_val_list:
 
 # Test Dataset - Real
 db_test_list = []
-if config.train.datasetsTestReal is not None:
+if config.train.useInteractionDataset:
+    pass
+elif config.train.datasetsTestReal is not None:
     for dataset in config.train.datasetsTestReal:
         if dataset.images:
             mask_dir = dataset.masks if hasattr(dataset, 'masks') and dataset.masks else ''
@@ -232,12 +248,17 @@ if config.train.datasetsTestReal is not None:
                                                   transform=augs_test,
                                                   input_only=None)
             db_test_list.append(db)
-    if db_test_list:
-        db_test = torch.utils.data.ConcatDataset(db_test_list)
+if db_test_list:
+    db_test = torch.utils.data.ConcatDataset(db_test_list)
 
 # Test Dataset - Synthetic
 db_test_synthetic_list = []
-if config.train.datasetsTestSynthetic is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), test=True,
+        transform_cleargrasp=augs_test, input_only_cleargrasp=None)
+    db_test_synthetic_list.append(db)
+elif config.train.datasetsTestSynthetic is not None:
     for dataset in config.train.datasetsTestSynthetic:
         if dataset.images:
             db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -245,8 +266,8 @@ if config.train.datasetsTestSynthetic is not None:
                                                   transform=augs_test,
                                                   input_only=None)
             db_test_synthetic_list.append(db)
-    if db_test_synthetic_list:
-        db_test_synthetic = torch.utils.data.ConcatDataset(db_test_synthetic_list)
+if db_test_synthetic_list:
+    db_test_synthetic = torch.utils.data.ConcatDataset(db_test_synthetic_list)
 
 # Create dataloaders
 if db_val_list:
@@ -448,7 +469,9 @@ for epoch in range(START_EPOCH, END_EPOCH):
 
     # split scannet and matterport dataset for  random selection of data
     db_train_list = []
-    if config.train.datasetsTrain is not None:
+    if config.train.useInteractionDataset:
+        db_train_list.append(db_synthetic)
+    elif config.train.datasetsTrain is not None:
         if config.train.datasetsTrain[0].images:
             train_size_synthetic = int(config.train.percentageDataForTraining * len(db_synthetic))
             db, _ = torch.utils.data.random_split(db_synthetic,

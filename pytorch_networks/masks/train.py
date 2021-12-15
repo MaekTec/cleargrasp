@@ -22,6 +22,9 @@ from imgaug import augmenters as iaa
 
 from modeling import deeplab
 import dataloader
+import interaction_dataset
+from transforms import DepthCameraNoise, BinaryObjectMask
+import torchvision.transforms as transforms
 from utils import utils
 
 ###################### Load Config File #############################
@@ -124,7 +127,12 @@ input_only = [
 ]
 
 db_train_list = []
-if config.train.datasetsTrain is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), train=True,
+        transform_cleargrasp=augs_train, input_only_cleargrasp=input_only)
+    db_train_list.append(db)
+elif config.train.datasetsTrain is not None:
     for dataset in config.train.datasetsTrain:
         # TODO: Change name of dataset from "SurfaceNormalsDataset" to something appropriate.
         db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -146,7 +154,12 @@ augs_test = iaa.Sequential([
 ])
 
 db_val_list = []
-if config.train.datasetsVal is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), val=True,
+        transform_cleargrasp=augs_test, input_only_cleargrasp=None)
+    db_val_list.append(db)
+elif config.train.datasetsVal is not None:
     for dataset in config.train.datasetsVal:
         if dataset.images:
             db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -162,7 +175,9 @@ if db_val_list:
 
 # Test Dataset - Real
 db_test_list = []
-if config.train.datasetsTestReal is not None:
+if config.train.useInteractionDataset:
+    pass
+elif config.train.datasetsTestReal is not None:
     for dataset in config.train.datasetsTestReal:
         if dataset.images:
             db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,
@@ -175,7 +190,12 @@ if db_test_list:
 
 # Test Dataset - Synthetic
 db_test_synthetic_list = []
-if config.train.datasetsTestSynthetic is not None:
+if config.train.useInteractionDataset:
+    db = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.train.dataset,
+        transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), test=True,
+        transform_cleargrasp=augs_test, input_only_cleargrasp=None)
+    db_test_synthetic_list.append(db)
+elif config.train.datasetsTestSynthetic is not None:
     for dataset in config.train.datasetsTestSynthetic:
         if dataset.images:
             db = dataloader.SurfaceNormalsDataset(input_dir=dataset.images,

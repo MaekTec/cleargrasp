@@ -1,0 +1,87 @@
+# train.py Config - Training
+train:
+  useInteractionDataset: True
+  dataset: '../../../dataset'
+
+  # Training/Validation Params
+  model: 'drn'  # Possible values - ['drn', 'deeplab_xception', 'deeplab_resnet']
+  batchSize: 64
+  numEpochs: 300
+  imgHeight: 256
+  imgWidth: 256
+  numClasses: 2
+  numInputChannels: 3 # Num of channels in input image. RGB = 3 channels, Grayscale = 1 channel.
+  output_stride: 8 # Possible values: [8, 16]. Output stride for deeplabv3 model. Smaller values give finer details in output mask.
+  numWorkers: 32 # Num of workers used in the dataloader
+  logsDir: '../../training/masks' # Directory where logs of each exp will be saved.
+  lossFunc: 'cross_entropy2d' # Possible values: ['cross_entropy2d']
+  percentageDataForTraining: 1.0 # The percentage of images in dataset to be used for training. Rest used for validation.
+  validationBatchSize: 64
+  percentageDataForValidation: 1.0
+  testBatchSize: 64
+  outputStride: 8 # Possible values - [8, 16]. Output stride for deeplabv3 model. Smaller values give finer details in output mask.
+
+  continueTraining: False  # If true, continue training from a checkpoint
+  pathPrevCheckpoint: '../../training/surface_masks/exp-001/checkpoints/checkpoint-epoch-0025.pth' # Path to .pth checkpoint file to load to continue training from
+  initOptimizerFromCheckpoint: True  # Re-Initialize optimizer's state from checkpoint. NOTE: when this is enabled, value of learningRate will be overridden with value from checkpoint.
+  loadEpochNumberFromCheckpoint: True # If true, the epoch/iter numbering will start from the checkpoint's last epoch num.
+
+  saveImageInterval: 1 # Log output images to tensorboard every saveImageInterval epochs
+  testInterval: 1 # Run on test set every nTestInterval epochs. Keep at 0 to skip tests.
+  saveModelInterval: 1 # Save the model checkpoints every N epochs
+
+
+  # Optimizer Params
+  optimAdam:
+    learningRate: 0.001
+    weightDecay: 0 # Other values: 0.0001
+  optimAdamW:
+    learningRate: 0.001
+    weightDecay: 0.0001 # Other values: 0.0001
+  optimSgd:
+    learningRate: 1e-6
+    momentum: 0.9
+    weight_decay: 5e-4
+  lrScheduler: 'lr_poly' # Possible Values - ['', 'CyclicLR', 'StepLR', 'ReduceLROnPlateau', 'lr_poly'] # lr_poly used for deeplabv3+
+  lrSchedulerCyclic:
+    base_lr: 0.0005
+    max_lr: 0.02
+    step_size_up: 200
+    step_size_down: 200
+  lrSchedulerStep:
+    step_size: 7
+    gamma: 0.1
+  lrSchedulerPlateau:
+    factor: 0.8
+    patience: 25
+    verbose: True
+  lrPoly:
+    epochSize: 2 # After these many epochs, change learning rate
+    decay: 0.7
+
+# eval.py Config - Validation/Testing Inference
+eval:
+  # Synthetic datasets with ground truth labels
+  # Used as validation set
+  datasetsSynthetic:
+    - images: 'data/test/tree_bath_bomb_test/rgb-imgs'
+      masks:  'data/test/tree_bath_bomb_test/segmentation-masks'
+
+  # Datasets of real images, no labels available
+  # Used as Test set
+  datasetsReal:
+    # - images: "data/datasets/paper_dataset_real/selected_test/d415"
+    #   masks:  "data/datasets/paper_dataset_real/selected_test/d415"
+    # - images: "data/datasets/paper_dataset_real/selected_test/d435"
+    #   masks:  "data/datasets/paper_dataset_real/selected_test/d435"
+
+
+  # Params
+  model: 'drn' # Possible values: ['drn', 'deeplab_xception', 'deeplab_resnet']
+  numClasses: 2
+  batchSize: 32
+  imgHeight: 256
+  imgWidth: 256
+  numWorkers: 8 # Num of workers used in the dataloader
+  pathWeightsFile: 'data/checkpoints/masks/checkpoint-epoch-0098.pth' # Path to the checkpoint to be loaded
+  resultsDir: 'data/results'  # The dir where results will be stored
