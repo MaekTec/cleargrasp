@@ -24,6 +24,9 @@ import yaml
 import torch
 import cv2
 import numpy as np
+import interaction_dataset
+from transforms import DepthCameraNoise, BinaryObjectMask
+import torchvision.transforms as transforms
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run eval of depth completion on synthetic data')
@@ -100,41 +103,49 @@ if __name__ == '__main__':
                                                                 max_depth=config.depthVisualization.maxDepth,
                                                                 tmp_dir=results_dir)
 
-    # Create lists of input data
-    rgb_file_list = []
-    depth_file_list = []
-    segmentation_masks_list = []
-    gt_depth_file_list = []
-    for dataset in config.files:
-        EXT_COLOR_IMG = ['-transparent-rgb-img.jpg', '-rgb.jpg']  #'-rgb.jpg' - includes normals-rgb.jpg
-        EXT_DEPTH_IMG = ['-depth-rectified.exr', '-transparent-depth-img.exr']
-        EXT_DEPTH_GT = ['-depth-rectified.exr', '-opaque-depth-img.exr']
-        EXT_MASK = ['-mask.png']
-        for ext in EXT_COLOR_IMG:
-            rgb_file_list += (sorted(glob.glob(os.path.join(dataset.image, '*' + ext))))
-        for ext in EXT_DEPTH_IMG:
-            depth_file_list += (sorted(glob.glob(os.path.join(dataset.depth, '*' + ext))))
-        assert len(rgb_file_list) == len(depth_file_list), (
-            'number of rgb ({}) and depth images ({}) are not equal'.format(len(rgb_file_list), len(depth_file_list)))
+    if config.useInteractionDataset:
+        dataset = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.dataset,
+            transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), test=True)
 
-        if dataset.masks is not None and dataset.masks != '':
-            for ext in EXT_MASK:
-                segmentation_masks_list += (sorted(glob.glob(os.path.join(dataset.masks, '*' + ext))))
-            assert len(rgb_file_list) == len(segmentation_masks_list), (
-                'number of rgb ({}) and masks ({}) are not equal'.format(len(rgb_file_list),
-                                                                         len(segmentation_masks_list)))
-        if dataset.gt_depth is not None and dataset.gt_depth != '':
-            for ext in EXT_DEPTH_GT:
-                gt_depth_file_list += (sorted(glob.glob(os.path.join(dataset.gt_depth, '*' + ext))))
-            assert len(rgb_file_list) == len(gt_depth_file_list), (
-                'number of rgb ({}) and gt depth ({}) are not equal'.format(len(rgb_file_list),
-                                                                            len(gt_depth_file_list)))
+        print('Total Num files:', len(dataset))
+        assert len(dataset) > 0, ('No files found in given directories')
+    else:
+        # Create lists of input data
+        rgb_file_list = []
+        depth_file_list = []
+        segmentation_masks_list = []
+        gt_depth_file_list = []
+        for dataset in config.files:
+            EXT_COLOR_IMG = ['-transparent-rgb-img.jpg', '-rgb.jpg']  #'-rgb.jpg' - includes normals-rgb.jpg
+            EXT_DEPTH_IMG = ['-depth-rectified.exr', '-transparent-depth-img.exr']
+            EXT_DEPTH_GT = ['-depth-rectified.exr', '-opaque-depth-img.exr']
+            EXT_MASK = ['-mask.png']
+            for ext in EXT_COLOR_IMG:
+                rgb_file_list += (sorted(glob.glob(os.path.join(dataset.image, '*' + ext))))
+            for ext in EXT_DEPTH_IMG:
+                depth_file_list += (sorted(glob.glob(os.path.join(dataset.depth, '*' + ext))))
+            assert len(rgb_file_list) == len(depth_file_list), (
+                'number of rgb ({}) and depth images ({}) are not equal'.format(len(rgb_file_list), len(depth_file_list)))
 
-    print('Total Num of rgb_files:', len(rgb_file_list))
-    print('Total Num of depth_files:', len(depth_file_list))
-    print('Total Num of gt_depth_files:', len(gt_depth_file_list))
-    print('Total Num of segmentation_masks:', len(segmentation_masks_list))
-    assert len(rgb_file_list) > 0, ('No files found in given directories')
+            if dataset.masks is not None and dataset.masks != '':
+                for ext in EXT_MASK:
+                    segmentation_masks_list += (sorted(glob.glob(os.path.join(dataset.masks, '*' + ext))))
+                assert len(rgb_file_list) == len(segmentation_masks_list), (
+                    'number of rgb ({}) and masks ({}) are not equal'.format(len(rgb_file_list),
+                                                                            len(segmentation_masks_list)))
+            if dataset.gt_depth is not None and dataset.gt_depth != '':
+                for ext in EXT_DEPTH_GT:
+                    gt_depth_file_list += (sorted(glob.glob(os.path.join(dataset.gt_depth, '*' + ext))))
+                assert len(rgb_file_list) == len(gt_depth_file_list), (
+                    'number of rgb ({}) and gt depth ({}) are not equal'.format(len(rgb_file_list),
+                                                                                len(gt_depth_file_list)))
+
+        print('Total Num of rgb_files:', len(rgb_file_list))
+        print('Total Num of depth_files:', len(depth_file_list))
+        print('Total Num of gt_depth_files:', len(gt_depth_file_list))
+        print('Total Num of segmentation_masks:', len(segmentation_masks_list))
+        assert len(rgb_file_list) > 0, ('No files found in given directories')
+        dataset = rgb_file_list
 
     # Create CSV File to store error metrics
     csv_filename = 'computed_errors.csv'
@@ -152,17 +163,23 @@ if __name__ == '__main__':
     mae_mean = 0.0
     sq_rel_mean = 0.0
 
-    for i in range(len(rgb_file_list)):
+
+    for i, data in enumerate(dataset):
+    #for i in range(len(rgb_file_list)):
 
         # Run Depth Completion
-        color_img = imageio.imread(rgb_file_list[i])
-        input_depth = api_utils.exr_loader(depth_file_list[i], ndim=1)
+        if config.useInteractionDataset:
+             ((color_img, input_depth), (depth_gt, normals, occlusion_boundary, seg_mask)) = data
+        else:
+            color_img = imageio.imread(rgb_file_list[i])
+            input_depth = api_utils.exr_loader(depth_file_list[i], ndim=1)
 
         # NOTE: If no gt_depth present, it means the depth itself is gt_depth (syn data). We mask out all objects in input depth so depthcomplete can't cheat.
-        if len(gt_depth_file_list) == 0 and len(segmentation_masks_list) > 0:
-            if args.maskInputDepth:
-                masks = imageio.imread(segmentation_masks_list[i])
-                input_depth[masks > 0] = 0.0
+        if not config.useInteractionDataset:
+            if len(gt_depth_file_list) == 0 and len(segmentation_masks_list) > 0:
+                if args.maskInputDepth:
+                    masks = imageio.imread(segmentation_masks_list[i])
+                    input_depth[masks > 0] = 0.0
 
         try:
             output_depth, filtered_output_depth = depthcomplete.depth_completion(
@@ -179,7 +196,9 @@ if __name__ == '__main__':
 
         # Compute Errors in Depth Estimation over the Masked Area
         # If a folder of masks is given, use it to calc error only over masked regions, else over entire image
-        if segmentation_masks_list:
+        if config.useInteractionDataset:
+            pass
+        elif segmentation_masks_list:
             seg_mask = imageio.imread(segmentation_masks_list[i])
             seg_mask = cv2.resize(seg_mask, (outputImgWidth, outputImgHeight), interpolation=cv2.INTER_NEAREST)
             seg_mask = (seg_mask > 0)
@@ -187,7 +206,9 @@ if __name__ == '__main__':
             seg_mask = np.full((outputImgHeight, outputImgWidth), True, dtype=float)
 
         # If Ground Truth depth folder is given, use that to compute errors. In case of Synthetic data, input depth is GT depth.
-        if gt_depth_file_list:
+        if config.useInteractionDataset:
+            pass
+        elif gt_depth_file_list:
             depth_gt = api_utils.exr_loader(gt_depth_file_list[i], ndim=1)
         else:
             depth_gt = api_utils.exr_loader(depth_file_list[i], ndim=1)
@@ -201,7 +222,7 @@ if __name__ == '__main__':
 
         metrics = depthcomplete.compute_errors(depth_gt, output_depth, mask_valid_region)
 
-        print('\nImage {:09d} / {}:'.format(i, len(rgb_file_list) - 1))
+        print('\nImage {:09d} / {}:'.format(i, len(dataset) - 1))
         print('{:>15}:'.format('rmse'), metrics['rmse'])
         print('{:>15}:'.format('abs_rel'), metrics['abs_rel'])
         print('{:>15}:'.format('mae'), metrics['mae'])
@@ -235,13 +256,13 @@ if __name__ == '__main__':
         # print('    Mean Absolute Error in filtered depth (if Synthetic Data) = {:.4f} cm'.format(error_filtered_output_depth))
 
     # Calculate Mean Errors over entire Dataset
-    a1_mean = round(a1_mean / len(rgb_file_list), 2)
-    a2_mean = round(a2_mean / len(rgb_file_list), 2)
-    a3_mean = round(a3_mean / len(rgb_file_list), 2)
-    rmse_mean = round(rmse_mean / len(rgb_file_list), 3)
-    abs_rel_mean = round(abs_rel_mean / len(rgb_file_list), 3)
-    mae_mean = round(mae_mean / len(rgb_file_list), 3)
-    sq_rel_mean = round(sq_rel_mean / len(rgb_file_list), 3)
+    a1_mean = round(a1_mean / len(dataset), 2)
+    a2_mean = round(a2_mean / len(dataset), 2)
+    a3_mean = round(a3_mean / len(dataset), 2)
+    rmse_mean = round(rmse_mean / len(dataset), 3)
+    abs_rel_mean = round(abs_rel_mean / len(dataset), 3)
+    mae_mean = round(mae_mean / len(dataset), 3)
+    sq_rel_mean = round(sq_rel_mean / len(dataset), 3)
 
     print('\n\nMean Error Stats for Entire Dataset:')
     print('{:>15}:'.format('rmse_mean'), rmse_mean)
