@@ -1,6 +1,7 @@
 # Config for eval script - Depth Completion Synthetic
 
 # Input file Directories of Synthetic Images
+useInteractionDataset: False
 files:
   - image: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'
     depth: '../data/datasets/cleargrasp-dataset-test-val/real-val/d435/'

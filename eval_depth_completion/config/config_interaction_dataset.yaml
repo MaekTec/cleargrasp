@@ -10,21 +10,21 @@ resultsDir: '../results/interaction_dataset'
 # Surface Normals Model
 normals:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../training/surface_normals/interaction_data/checkpoints/checkpoint-epoch-0076.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../training/surface_normals/interaction_data/checkpoints/checkpoint-epoch-0094.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Outlines Model
 outlines:
   model: 'drn'  # Which model to use for inference. Possible values: ['unet', 'deeplab_resnet']
-  pathWeightsFile: '../training/occlusion_boundaries/interaction_data/checkpoints/checkpoint-epoch-0117.pth'  # Path to the checkpoint to be loaded
+  pathWeightsFile: '../training/occlusion_boundaries/interaction_data/checkpoints/checkpoint-epoch-0120.pth'  # Path to the checkpoint to be loaded
   inferenceHeight: 256
   inferenceWidth: 256
 
 # Segmentation Masks Model
 masks:
   model: 'drn' # Which model to use for inference. Possible values: ['drn', 'deeplab_resnet']
-  pathWeightsFile: '../training/masks/interaction_data/checkpoints/checkpoint-epoch-0067.pth'
+  pathWeightsFile: '../training/masks/interaction_data/checkpoints/checkpoint-epoch-0163.pth'
   inferenceHeight: 256
   inferenceWidth: 256
 
@@ -33,8 +33,8 @@ depth2depth:
   pathExecutable: '../api/depth2depth/gaps/bin/x86_64/depth2depth'  # The path to the depth2depth executable.
   xres: 256  # Image Output Width
   yres: 256  # Image Output Height
-  fx: 185 # Focal length in pixels along width
-  fy: 185 # Focal length in pixels along height
+  fx: 284 # Focal length in pixels along width (width / (2 * np.tan(np.deg2rad(fov) / 2)))
+  fy: 284 # Focal length in pixels along height (height / (2 * np.tan(np.deg2rad(fov) / 2)))
   cx: 128 # Center of image in pixels along width
   cy: 128  # Center of image in pixels along height
   inertia_weight: 1000.0  # The strength of the penalty on the difference between the input and the output depth map on observed pixels. Set this value higher if you want to maintain the observed depth from input_depth.

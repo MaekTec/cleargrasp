@@ -124,7 +124,7 @@ def save_uint16_png(path, image):
     img.save(path)
 
 
-def _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=0.0, max_depth=1.0):
+def _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=0.0, max_depth=1.0, mask_zero=True):
     '''Converts a floating point depth image to uint8 or uint16 image.
     The depth image is first scaled to (0.0, max_depth) and then scaled and converted to given datatype.
 
@@ -144,7 +144,10 @@ def _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=0.0, max_depth=1.0
         raise ValueError('Unsupported dtype {}. Must be one of ("np.uint8", "np.uint16")'.format(dtype))
 
     # Clip depth image to given range
-    depth_img = np.ma.masked_array(depth_img, mask=(depth_img == 0.0))
+    if mask_zero:
+        depth_img = np.ma.masked_array(depth_img, mask=(depth_img == 0.0))
+    else:
+        depth_img = np.ma.masked_array(depth_img)
     depth_img = np.ma.clip(depth_img, min_depth, max_depth)
 
     # Get min/max value of given datatype
@@ -162,7 +165,7 @@ def _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=0.0, max_depth=1.0
 
 
 def depth2rgb(depth_img, min_depth=0.0, max_depth=1.5, color_mode=cv2.COLORMAP_JET, reverse_scale=False,
-              dynamic_scaling=False):
+              dynamic_scaling=False, mask_zero=True):
     '''Generates RGB representation of a depth image.
     To do so, the depth image has to be normalized by specifying a min and max depth to be considered.
 
@@ -187,9 +190,9 @@ def depth2rgb(depth_img, min_depth=0.0, max_depth=1.5, color_mode=cv2.COLORMAP_J
     if dynamic_scaling:
         depth_img_scaled = _normalize_depth_img(depth_img, dtype=np.uint8,
                                                 min_depth=max(depth_img[depth_img > 0].min(), min_depth),    # Add a small epsilon so that min depth does not show up as black (invalid pixels)
-                                                max_depth=min(depth_img.max(), max_depth))
+                                                max_depth=min(depth_img.max(), max_depth), mask_zero=mask_zero)
     else:
-        depth_img_scaled = _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=min_depth, max_depth=max_depth)
+        depth_img_scaled = _normalize_depth_img(depth_img, dtype=np.uint8, min_depth=min_depth, max_depth=max_depth, mask_zero=mask_zero)
 
     if reverse_scale is True:
         depth_img_scaled = np.ma.masked_array(depth_img_scaled, mask=(depth_img_scaled == 0.0))

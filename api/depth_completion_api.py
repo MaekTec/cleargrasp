@@ -134,6 +134,10 @@ class DepthToDepthCompletion(object):
             'postfix': '-gt-pointcloud.ply',
             'folder-name': 'gt-point-cloud'
         },
+        'error-depth': {
+            'postfix': '-error-depth.exr',
+            'folder-name': 'error-depth'
+        },
         'masks': {
             'postfix': '-mask.png',
             'folder-name': 'intermediate-results'
@@ -326,6 +330,7 @@ class DepthToDepthCompletion(object):
         input_image_dir = os.path.join(root_dir, self.FOLDER_MAP['input-image']['folder-name'])
         gt_depth_dir = os.path.join(root_dir, self.FOLDER_MAP['gt-depth']['folder-name'])
         gt_ptcloud_dir = os.path.join(root_dir, self.FOLDER_MAP['gt-point-cloud']['folder-name'])
+        error_depth_dir = os.path.join(root_dir, self.FOLDER_MAP['error-depth']['folder-name'])
 
         dir_list = [os.path.join(root_dir, self.FOLDER_MAP[key]['folder-name']) for key in self.FOLDER_MAP]
         for dirname in dir_list:
@@ -386,6 +391,12 @@ class DepthToDepthCompletion(object):
         utils.write_point_cloud(output_ptcloud_filename, self.surface_normals_rgb, self.output_depth, self.fx, self.fy,
                                 self.cx, self.cy)
 
+        # Store depth error
+        error_depth = self.depth_gt - self.output_depth
+        error_depth_filename = '{:09d}'.format(files_prefix) + self.FOLDER_MAP['error-depth']['postfix']
+        error_depth_filename = os.path.join(error_depth_dir, error_depth_filename)
+        utils.exr_saver(error_depth_filename, error_depth, ndim=3)
+
         # Store Masks
         mask_filename = '{:09d}'.format(files_prefix) + self.FOLDER_MAP['masks']['postfix']
         mask_filename = os.path.join(masks_dir, mask_filename)
@@ -418,6 +429,20 @@ class DepthToDepthCompletion(object):
                                            color_mode=COLOR_MAP)
         gt_depth_rgb = utils.depth2rgb(self.depth_gt, min_depth=min_depth, max_depth=max_depth, color_mode=COLOR_MAP)
 
+        error_masked_depth = self.depth_gt - self.output_depth
+        error_masked_depth[self.mask_valid_region == 0] = 0
+        error_masked_depth_rgb = utils.depth2rgb(error_masked_depth,
+                                           min_depth=-(max_depth-min_depth)*0.2,
+                                           max_depth=(max_depth-min_depth)*0.2,
+                                           color_mode=COLOR_MAP,
+                                           mask_zero=False)
+
+        error_depth_rgb = utils.depth2rgb(error_depth,
+                                           min_depth=-(max_depth-min_depth)*0.2,
+                                           max_depth=(max_depth-min_depth)*0.2,
+                                           color_mode=COLOR_MAP,
+                                           mask_zero=False)
+
         # Store input-output depth RGB
         gt_depth_filename = '{:09d}'.format(files_prefix) + '-gt-depth-rgb.png'
         gt_depth_filename = os.path.join(gt_depth_dir, gt_depth_filename)
@@ -431,6 +456,9 @@ class DepthToDepthCompletion(object):
         output_depth_filename = '{:09d}'.format(files_prefix) + '-output-depth-rgb.png'
         output_depth_filename = os.path.join(output_depth_dir, output_depth_filename)
         imageio.imwrite(output_depth_filename, output_depth_rgb)
+        error_depth_filename = '{:09d}'.format(files_prefix) + '-output-depth-rgb.png'
+        error_depth_filename = os.path.join(error_depth_dir, error_depth_filename)
+        imageio.imwrite(error_depth_filename, error_depth_rgb)
 
         # Calculate error in output depth in meters (only on pixels that were 0.0 in input depth)
         DEPTH_SCALING_M_TO_CM = 100
@@ -459,9 +487,9 @@ class DepthToDepthCompletion(object):
 
         # Create Vizualization of all the results
         grid_image1 = np.concatenate(
-            (self.input_image, self.surface_normals_rgb, self.outlines_rgb, self.occlusion_weight_rgb, masked_img), 1)
+            (self.input_image, self.surface_normals_rgb, self.outlines_rgb, self.occlusion_weight_rgb, masked_img, mask_valid_region_3d), 1)
         grid_image2 = np.concatenate(
-            (orig_input_depth_rgb, input_depth_rgb, output_depth_rgb, gt_depth_rgb, mask_valid_region_3d), 1)
+            (orig_input_depth_rgb, input_depth_rgb, output_depth_rgb, gt_depth_rgb, error_depth_rgb, error_masked_depth_rgb), 1)
         grid_image = np.concatenate((grid_image1, grid_image2), 0)
 
         path_result_viz = os.path.join(results_viz_dir,
