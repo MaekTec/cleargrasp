@@ -106,6 +106,8 @@ if __name__ == '__main__':
     if config.useInteractionDataset:
         dataset = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.dataset,
             transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), test=True)
+        #dataset = interaction_dataset.InteractionDatasetEvalForCleargrasp(config.dataset,
+        #    transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), split=(0.9, 0.098, 0.002), test=True)
 
         print('Total Num files:', len(dataset))
         assert len(dataset) > 0, ('No files found in given directories')
@@ -163,13 +165,17 @@ if __name__ == '__main__':
     mae_mean = 0.0
     sq_rel_mean = 0.0
 
-
+    skipped_frames = 0
     for i, data in enumerate(dataset):
     #for i in range(len(rgb_file_list)):
 
         # Run Depth Completion
         if config.useInteractionDataset:
              ((color_img, input_depth), (depth_gt, normals, occlusion_boundary, seg_mask)) = data
+             if not np.any(seg_mask): # skip frames without a mask (metrics would be nan)
+                print(f"Skip {i} frame, because it has no mask. Metrics would be nan.")
+                skipped_frames += 1
+                continue
         else:
             color_img = imageio.imread(rgb_file_list[i])
             input_depth = api_utils.exr_loader(depth_file_list[i], ndim=1)
@@ -256,13 +262,14 @@ if __name__ == '__main__':
         # print('    Mean Absolute Error in filtered depth (if Synthetic Data) = {:.4f} cm'.format(error_filtered_output_depth))
 
     # Calculate Mean Errors over entire Dataset
-    a1_mean = round(a1_mean / len(dataset), 2)
-    a2_mean = round(a2_mean / len(dataset), 2)
-    a3_mean = round(a3_mean / len(dataset), 2)
-    rmse_mean = round(rmse_mean / len(dataset), 3)
-    abs_rel_mean = round(abs_rel_mean / len(dataset), 3)
-    mae_mean = round(mae_mean / len(dataset), 3)
-    sq_rel_mean = round(sq_rel_mean / len(dataset), 3)
+    dataset_size = len(dataset) - skipped_frames
+    a1_mean = round(a1_mean / dataset_size, 2)
+    a2_mean = round(a2_mean / dataset_size, 2)
+    a3_mean = round(a3_mean / dataset_size, 2)
+    rmse_mean = round(rmse_mean / dataset_size, 3)
+    abs_rel_mean = round(abs_rel_mean / dataset_size, 3)
+    mae_mean = round(mae_mean / dataset_size, 3)
+    sq_rel_mean = round(sq_rel_mean / dataset_size, 3)
 
     print('\n\nMean Error Stats for Entire Dataset:')
     print('{:>15}:'.format('rmse_mean'), rmse_mean)

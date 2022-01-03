@@ -110,7 +110,7 @@ class InteractionDataset(Dataset):
         return inputs, labels
 
 
-class InteractionDatasetMasksForCleargrasp(InteractionDataset):
+class InteractionDatasetEvalForCleargrasp(InteractionDataset):
 
     def __init__(
             self,

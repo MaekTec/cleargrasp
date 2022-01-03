@@ -434,13 +434,13 @@ class DepthToDepthCompletion(object):
         error_masked_depth_rgb = utils.depth2rgb(error_masked_depth,
                                            min_depth=-(max_depth-min_depth)*0.2,
                                            max_depth=(max_depth-min_depth)*0.2,
-                                           color_mode=COLOR_MAP,
+                                           color_mode=cv2.COLORMAP_TWILIGHT_SHIFTED,
                                            mask_zero=False)
 
         error_depth_rgb = utils.depth2rgb(error_depth,
                                            min_depth=-(max_depth-min_depth)*0.2,
                                            max_depth=(max_depth-min_depth)*0.2,
-                                           color_mode=COLOR_MAP,
+                                           color_mode=cv2.COLORMAP_TWILIGHT_SHIFTED,
                                            mask_zero=False)
 
         # Store input-output depth RGB
