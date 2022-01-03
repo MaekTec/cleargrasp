@@ -104,7 +104,7 @@ if __name__ == '__main__':
                                                                 tmp_dir=results_dir)
 
     if config.useInteractionDataset:
-        dataset = interaction_dataset.InteractionDatasetMasksForCleargrasp(config.dataset,
+        dataset = interaction_dataset.InteractionDatasetEvalForCleargrasp(config.dataset,
             transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), test=True)
         #dataset = interaction_dataset.InteractionDatasetEvalForCleargrasp(config.dataset,
         #    transform=transforms.Compose([DepthCameraNoise()]), target_transform=BinaryObjectMask(), split=(0.9, 0.098, 0.002), test=True)
