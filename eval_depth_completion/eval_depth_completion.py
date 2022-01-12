@@ -24,7 +24,9 @@ import yaml
 import torch
 import cv2
 import numpy as np
-import interaction_dataset
+
+sys.path.append('../../data')
+import data.interaction_dataset_cleargrasp as interaction_dataset
 from transforms import DepthCameraNoise, BinaryObjectMask
 import torchvision.transforms as transforms
 

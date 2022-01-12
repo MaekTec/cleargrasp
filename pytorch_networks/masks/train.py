@@ -22,10 +22,14 @@ from imgaug import augmenters as iaa
 
 from modeling import deeplab
 import dataloader
-import interaction_dataset
-from transforms import DepthCameraNoise, BinaryObjectMask
-import torchvision.transforms as transforms
 from utils import utils
+
+import sys
+sys.path.append('../..')
+import data.interaction_dataset_cleargrasp as interaction_dataset
+import torchvision.transforms as transforms
+sys.path.append('../../../data')
+from transforms import DepthCameraNoise, BinaryObjectMask
 
 ###################### Load Config File #############################
 parser = argparse.ArgumentParser(description='Run training of outlines prediction model')
